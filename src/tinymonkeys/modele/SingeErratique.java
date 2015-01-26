@@ -7,8 +7,8 @@ import java.util.Random;
 /**
  * Classe du singe erratique.
  * 
- * @version 1.0
- * @author Camille Constant
+ * @version 1.1
+ * @author Camille Constant, Adrian Fraisse
  *
  */
 
@@ -43,21 +43,28 @@ public class SingeErratique extends Singe {
 	 */
 	private CaseVide getNextRandomPos() {
 		final Random random = new Random();
-		
+
 		// Création d'une liste contenant les 4 déplacements possibles
 		final List<CaseVide> listPos = new ArrayList<CaseVide>();
 		listPos.add(new CaseVide(this.getX(), this.getY() + 1));
 		listPos.add(new CaseVide(this.getX(), this.getY() - 1));
 		listPos.add(new CaseVide(this.getX() + 1, this.getY()));
 		listPos.add(new CaseVide(this.getX() - 1, this.getY()));
-		
+
 		CaseVide nextCase;
 		do {
-			// Retrait alétoire d'une des positions, puis validation
-			// Si la position est invalide, nouvelle tentative aléatoire
-			nextCase = listPos.remove(random.nextInt(listPos.size()));
-		} while (!this.monkeyIsland.isLibre(nextCase.x, nextCase.y) && !listPos.isEmpty());
-		
-		return listPos.isEmpty() ? null : nextCase;
+			// Retrait alétoire d'une des positions, puis validation. Si la
+			// position est invalide, nouvelle tentative aléatoire.
+			try {
+				nextCase = listPos.remove(random.nextInt(listPos.size()));
+			} catch (IndexOutOfBoundsException e) {
+				// Le déplacement est impossible
+				nextCase = null;
+			}
+		} while (nextCase != null
+				&& (!this.monkeyIsland.isTerre(nextCase.x, nextCase.y)
+				|| !this.monkeyIsland.isLibre(nextCase.x, nextCase.y)));
+
+		return nextCase;
 	}
 }

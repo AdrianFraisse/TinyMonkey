@@ -1,8 +1,8 @@
 package tinymonkeys.modele;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
 
 import javax.swing.event.EventListenerList;
 
@@ -121,7 +121,7 @@ public class Ile {
 		CaseVide newCase = null;
 		do {
 			newCase = CaseVide.genererCaseAleatoire(this.getLargeurCarte(), this.getLongueurCarte());
-		} while (!this.isLibre(newCase.x, newCase.y));
+		} while (!this.isTerre(newCase.x, newCase.y) || !this.isLibre(newCase.x, newCase.y));
 		
 		this.pirate.positionInitiale(newCase.x, newCase.y);
 	}
@@ -215,24 +215,33 @@ public class Ile {
 	}
 	
 	/**
-	 * Vérifie si la case aux cordonnées passées en paramètre est libre, 
-	 * i.e. c'est une case terre ne contenant pas d'autre personnage (exception faite du pirate).
+	 * Vérifie si la case aux cordonnées passées en paramètre est une case terre.
 	 * 
 	 * @param x abscisse de la case
 	 * @param y ordonnée de la case 
-	 * @return true si la case est vide
+	 * @return true si la case est une case terre, false sinon.
+	 */
+	protected boolean isTerre(int x, int y) {
+		return x <= this.getLargeurCarte() && y <= this.getLongueurCarte() && this.valeurCarte(x, y) == 1;
+	}
+
+	/**
+	 * Vérifie si la case aux cordonnées passées en paramètre est libre.
+	 * 
+	 * @param x abscisse de la case
+	 * @param y ordonnée de la case 
+	 * @return true si la case est une case terre, false sinon.
 	 */
 	protected boolean isLibre(int x, int y) {
-		boolean res = false;
-		if (x <= this.getLargeurCarte() && y <= this.getLongueurCarte() && this.valeurCarte(x, y) == 1) {
-			for (SingeErratique singe : this.erratiques.getSingesErratiques()) {
-				if (singe.coordonneesEgales(x, y)) {
-					res = false;
-					break;
-				}
+		boolean res = true;
+		
+		final Iterator<SingeErratique> it = this.erratiques.getSingesErratiques().iterator();
+		while (res && it.hasNext()) {
+			if (it.next().coordonneesEgales(x, y)) {
+				res = false;
 			}
 		}
 		return res;
 	}
-	
+
 }
