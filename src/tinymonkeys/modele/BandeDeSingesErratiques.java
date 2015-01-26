@@ -1,5 +1,7 @@
 package tinymonkeys.modele;
 
+import java.util.List;
+import java.util.Random;
 import java.util.Vector;
 
 import javax.swing.event.EventListenerList;
@@ -12,6 +14,11 @@ import javax.swing.event.EventListenerList;
  *
  */
 public class BandeDeSingesErratiques extends Thread {
+
+	/**
+	 * Temporisation entre chaque déplacement de singe.
+	 */
+	private static final int TEMPO_DEPLACEMENT = 500;
 
 	/**
 	 * Vecteur contenant l'ensemble des singes erratiques.
@@ -56,8 +63,13 @@ public class BandeDeSingesErratiques extends Thread {
 	 * @param n le nombre de singes a ajouter.
 	 */
 	public void ajoutSingesErratiques(int n) {
+		// On récupère toutes les cases terre
+		final List<CaseVide> casesTerre = this.monkeyIsland.genererListCasesTerre();		
+		final Random random = new Random();
+		
 		for (int i=0; i<n; i++) {
-			final AbstractElement nextCase = this.monkeyIsland.prendrePositionLibreAleatoire();
+			// On prend une case terre de manière aléatoire
+			final CaseVide nextCase = casesTerre.remove(random.nextInt(casesTerre.size() + 1));
 			this.erratiques.add(new SingeErratique(nextCase.x, nextCase.y, this.monkeyIsland));
 		}
 	}
@@ -75,7 +87,15 @@ public class BandeDeSingesErratiques extends Thread {
 
 	@Override
 	public void run() {
-		// TODO
+		// Déplace les singes, les uns après les autres, de manière temporisée
+		for (SingeErratique singe : this.erratiques) {			
+			try {
+				Thread.sleep(TEMPO_DEPLACEMENT);
+			} catch (InterruptedException e) {
+				System.err.println("Thread interrompu : " + e.getCause());
+			}
+			singe.deplacerSinge();
+		}
 	}
 
 }

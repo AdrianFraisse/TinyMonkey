@@ -30,6 +30,7 @@ public class SingeErratique extends Singe {
 	public void deplacerSinge() {
 		final CaseVide nextCase = this.getNextRandomPos();
 		if (null != nextCase) {
+			// Si la case est null, on abandonne le déplacement
 			this.setPosition(nextCase.x, nextCase.y);
 		}
 	}
@@ -50,11 +51,13 @@ public class SingeErratique extends Singe {
 		listPos.add(new CaseVide(this.getX() + 1, this.getY()));
 		listPos.add(new CaseVide(this.getX() - 1, this.getY()));
 		
-		CaseVide nextCase = null;
+		CaseVide nextCase;
 		do {
+			// Retrait alétoire d'une des positions, puis validation
+			// Si la position est invalide, nouvelle tentative aléatoire
 			nextCase = listPos.remove(random.nextInt(listPos.size()));
-		} while (!this.monkeyIsland.isLibre(nextCase) && !listPos.isEmpty());
+		} while (!this.monkeyIsland.isLibre(nextCase.x, nextCase.y) && !listPos.isEmpty());
 		
-		return nextCase;
+		return listPos.isEmpty() ? null : nextCase;
 	}
 }

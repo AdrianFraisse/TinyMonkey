@@ -21,11 +21,6 @@ public class Ile {
 	private int[][] carte;
 	
 	/**
-	 * Une liste représentant les cases terre vides de la carte.
-	 */
-	private List<AbstractElement> listCasesVides;
-
-	/**
 	 * Les singes erratiques.
 	 */
 	private BandeDeSingesErratiques erratiques;
@@ -54,7 +49,6 @@ public class Ile {
 		this.tresor = null;
 		this.pirate = new Pirate(this);
 		this.ileEcouteurs = new EventListenerList();
-		this.listCasesVides = this.genererListCasesTerre();
 	}
 
 	/**
@@ -122,8 +116,14 @@ public class Ile {
 	 */
 	public void ajoutPirate(String avatar) {
 		this.pirate.setAvatar(avatar);
-		final AbstractElement nextCase = this.prendrePositionLibreAleatoire();
-		this.pirate.positionInitiale(nextCase.x, nextCase.y);
+		
+		// On évite de mettre le pirate immédiatement sur un singe
+		CaseVide newCase = null;
+		do {
+			newCase = CaseVide.genererCaseAleatoire(this.getLargeurCarte(), this.getLongueurCarte());
+		} while (!this.isLibre(newCase.x, newCase.y));
+		
+		this.pirate.positionInitiale(newCase.x, newCase.y);
 	}
 
 	/**
@@ -169,10 +169,14 @@ public class Ile {
 	 * Creation du tresor a une position aleatoire.
 	 */
 	public void creationTresor() {
-		final AbstractElement nextCase = this.prendrePositionLibreAleatoire();
-		// Un personnage peut être présent sur une case trésor, on libére la case 
-		this.listCasesVides.add(nextCase);
-		this.tresor = new Tresor(nextCase.getX(), nextCase.getY());
+		CaseVide newCase = null;
+		
+		// Positionnement du trésor sur une case vide aléatoire
+		do {
+			newCase = CaseVide.genererCaseAleatoire(this.getLargeurCarte(), this.getLongueurCarte());
+		} while (this.valeurCarte(newCase.x, newCase.y) != 1);
+		
+		this.tresor = new Tresor(newCase.x, newCase.y);
 	}
 
 	/**
@@ -196,10 +200,10 @@ public class Ile {
 	/**
 	 * Génére une liste contenant toutes les cases terre.
 	 * 
-	 * @return une liste d'Case
+	 * @return une liste de CaseVide
 	 */
-	private List<AbstractElement> genererListCasesTerre() {
-		final List<AbstractElement> cases = new ArrayList<AbstractElement>();
+	protected List<CaseVide> genererListCasesTerre() {
+		final List<CaseVide> cases = new ArrayList<CaseVide>();
 		for (int i=0; i<this.getLargeurCarte(); i++) {
 			for (int j=0; j<this.getLongueurCarte(); j++) {
 				if (this.valeurCarte(i, j) == 1) {
@@ -211,30 +215,24 @@ public class Ile {
 	}
 	
 	/**
-	 * Trouve une case terre innocupée sur la carte, de manière aléatoire.
-	 * Supprime cette case de la liste des cases libres.
+	 * Vérifie si la case aux cordonnées passées en paramètre est libre, 
+	 * i.e. c'est une case terre ne contenant pas d'autre personnage (exception faite du pirate).
 	 * 
-	 * @return Un Case, avec ses attributs x, y valorisés.
+	 * @param x abscisse de la case
+	 * @param y ordonnée de la case 
+	 * @return true si la case est vide
 	 */
-	protected AbstractElement prendrePositionLibreAleatoire() {
-		final Random random = new Random();
-		final int nextCase = random.nextInt(this.listCasesVides.size() + 1);
-		return this.listCasesVides.remove(nextCase);
-	}
-
-	/**
-	 * Vérifie si la case passée en paramètre est libre, i.e. c'est une case terre ne contenant aucun personnage.
-	 * 
-	 * @param nextCase La case à comparer
-	 * @return true si la case est libre, false sinon
-	 */
-	public boolean isLibre(CaseVide nextCase) {
-		for (AbstractElement tmpCase : this.listCasesVides) {
-			if (tmpCase.coordonneesEgales(nextCase.getX(), nextCase.getY())) {
-				return true;
+	protected boolean isLibre(int x, int y) {
+		boolean res = false;
+		if (x <= this.getLargeurCarte() && y <= this.getLongueurCarte() && this.valeurCarte(x, y) == 1) {
+			for (SingeErratique singe : this.erratiques.getSingesErratiques()) {
+				if (singe.coordonneesEgales(x, y)) {
+					res = false;
+					break;
+				}
 			}
 		}
-		return false;
+		return res;
 	}
 	
 }
