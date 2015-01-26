@@ -1,12 +1,15 @@
 package tinymonkeys.modele;
 
+import java.util.Arrays;
+import java.util.List;
+
 import javax.swing.event.EventListenerList;
 
 /**
  * Classe d'un pirate.
  * 
- * @version 1.0
- * @author Camille Constant
+ * @version 1.1
+ * @author Camille Constant, Adrian Fraisse
  *
  */
 public class Pirate {
@@ -86,6 +89,8 @@ public class Pirate {
 	public void positionInitiale(int x, int y) {
 		this.x = x;
 		this.y = y;
+		Arrays.asList(this.pirateEcouteurs.getListeners(PirateEcouteur.class))
+			.forEach(listener -> listener.ajoutPirate(0, x, y, this.avatar));
 	}
 
 	/**
@@ -98,7 +103,31 @@ public class Pirate {
 	 * @param dy la direction en ordonnee (comprise entre -1 et 1).
 	 */
 	public void demandeDeplacement(int dx, int dy) {
-		// TODO - Use listeners ? - Req. Isle for step info
+		// Si le déplacement n'est pas sur une case terre, on ne fait rien
+		final int newX = this.x + dx;
+		final int newY = this.y + dy;
+
+		// Récupération des écouteurs
+		final List<PirateEcouteur> listeners = Arrays
+				.asList(this.pirateEcouteurs.getListeners(PirateEcouteur.class));
+		if (this.monkeyIsland.isTerre(newX, newY)) {
+
+			if (!this.monkeyIsland.isLibre(newX, newY)) {
+				// Si la case n'est pas libre, le pirate est tombé sur un singe
+				listeners.forEach(listener -> listener.mortPirate(0));
+			} else if (this.monkeyIsland.getTresor().coordonneesEgales(newX, newY)) {
+				// Le pirate a trouvé le trésor
+				this.monkeyIsland.suppressionTresor();
+			}
+			
+			// Dans tous les cas, on set sa position
+			this.x = newX;
+			this.y = newY;
+			listeners.forEach(listener -> listener.deplacementPirate(0, this.x, this.y));
+		}
+		// Libération du clavier
+		listeners.forEach(listener -> listener.liberationClavier());
+
 	}
 
 	/**

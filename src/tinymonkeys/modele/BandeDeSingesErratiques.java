@@ -1,5 +1,6 @@
 package tinymonkeys.modele;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.Vector;
@@ -88,13 +89,17 @@ public class BandeDeSingesErratiques extends Thread {
 	@Override
 	public void run() {
 		// Déplace les singes, les uns après les autres, de manière temporisée
-		for (SingeErratique singe : this.erratiques) {			
+		for (int i = 0; i < this.erratiques.size(); i++) {			
 			try {
 				Thread.sleep(TEMPO_DEPLACEMENT);
 			} catch (InterruptedException e) {
 				System.err.println("Thread interrompu : " + e.getCause());
 			}
+			final SingeErratique singe = this.erratiques.get(i);
 			singe.deplacerSinge();
+			final int id = i;
+			Arrays.asList(this.bandeSingesEcouteurs.getListeners(BandeDeSingesErratiquesEcouteur.class))
+			 	.forEach(listener -> listener.deplacementSingeErratique(id, singe.x, singe.y));
 		}
 	}
 

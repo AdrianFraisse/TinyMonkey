@@ -1,6 +1,7 @@
 package tinymonkeys.modele;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -19,7 +20,7 @@ public class Ile {
 	 * (0) ou terre (1).
 	 */
 	private int[][] carte;
-	
+
 	/**
 	 * Les singes erratiques.
 	 */
@@ -88,6 +89,8 @@ public class Ile {
 	 */
 	public void creationCarte(int[][] carte) {
 		this.carte = carte.clone();
+		Arrays.asList(this.ileEcouteurs.getListeners(IleEcouteur.class))
+		 	.forEach(listener -> listener.creationCarte(this.carte));
 	}
 
 	/**
@@ -97,7 +100,8 @@ public class Ile {
 	 */
 	public void setCarte(int[][] carte) {
 		this.carte = carte.clone();
-
+		Arrays.asList(this.ileEcouteurs.getListeners(IleEcouteur.class))
+		 	.forEach(listener -> listener.changementCarte(this.carte));
 	}
 
 	/**
@@ -116,13 +120,15 @@ public class Ile {
 	 */
 	public void ajoutPirate(String avatar) {
 		this.pirate.setAvatar(avatar);
-		
+
 		// On évite de mettre le pirate immédiatement sur un singe
 		CaseVide newCase = null;
 		do {
-			newCase = CaseVide.genererCaseAleatoire(this.getLargeurCarte(), this.getLongueurCarte());
-		} while (!this.isTerre(newCase.x, newCase.y) || !this.isLibre(newCase.x, newCase.y));
-		
+			newCase = CaseVide.genererCaseAleatoire(this.getLargeurCarte(),
+					this.getLongueurCarte());
+		} while (!this.isTerre(newCase.x, newCase.y)
+				|| !this.isLibre(newCase.x, newCase.y));
+
 		this.pirate.positionInitiale(newCase.x, newCase.y);
 	}
 
@@ -170,21 +176,25 @@ public class Ile {
 	 */
 	public void creationTresor() {
 		CaseVide newCase = null;
-		
 		// Positionnement du trésor sur une case vide aléatoire
 		do {
-			newCase = CaseVide.genererCaseAleatoire(this.getLargeurCarte(), this.getLongueurCarte());
+			newCase = CaseVide.genererCaseAleatoire(this.getLargeurCarte(),
+					this.getLongueurCarte());
 		} while (this.valeurCarte(newCase.x, newCase.y) != 1);
-		
+
 		this.tresor = new Tresor(newCase.x, newCase.y);
+		// Mise à jour de l'écouteur
+		Arrays.asList(this.ileEcouteurs.getListeners(IleEcouteur.class))
+				.forEach(listener -> listener.creationTresor(this.tresor.x, this.tresor.y));
 	}
 
 	/**
 	 * Suppression du tresor.
 	 */
 	public void suppressionTresor() {
-		// TODO : Est-ce vraiment le comportement attendu ?
 		this.tresor = null;
+		Arrays.asList(this.ileEcouteurs.getListeners(IleEcouteur.class))
+				.forEach(listener -> listener.suppressionTresor());
 	}
 
 	/**
@@ -196,7 +206,7 @@ public class Ile {
 	public void enregistreEcIle(IleEcouteur ecouteur) {
 		this.ileEcouteurs.add(IleEcouteur.class, ecouteur);
 	}
-	
+
 	/**
 	 * Génére une liste contenant toutes les cases terre.
 	 * 
@@ -204,8 +214,8 @@ public class Ile {
 	 */
 	protected List<CaseVide> genererListCasesTerre() {
 		final List<CaseVide> cases = new ArrayList<CaseVide>();
-		for (int i=0; i<this.getLargeurCarte(); i++) {
-			for (int j=0; j<this.getLongueurCarte(); j++) {
+		for (int i = 0; i < this.getLargeurCarte(); i++) {
+			for (int j = 0; j < this.getLongueurCarte(); j++) {
 				if (this.valeurCarte(i, j) == 1) {
 					cases.add(new CaseVide(i, j));
 				}
@@ -213,29 +223,32 @@ public class Ile {
 		}
 		return cases;
 	}
-	
+
 	/**
-	 * Vérifie si la case aux cordonnées passées en paramètre est une case terre.
+	 * Vérifie si la case aux cordonnées passées en paramètre est une case
+	 * terre.
 	 * 
 	 * @param x abscisse de la case
-	 * @param y ordonnée de la case 
+	 * @param y ordonnée de la case
 	 * @return true si la case est une case terre, false sinon.
 	 */
 	protected boolean isTerre(int x, int y) {
-		return x <= this.getLargeurCarte() && y <= this.getLongueurCarte() && this.valeurCarte(x, y) == 1;
+		return x <= this.getLargeurCarte() && y <= this.getLongueurCarte()
+				&& this.valeurCarte(x, y) == 1;
 	}
 
 	/**
 	 * Vérifie si la case aux cordonnées passées en paramètre est libre.
 	 * 
 	 * @param x abscisse de la case
-	 * @param y ordonnée de la case 
+	 * @param y ordonnée de la case
 	 * @return true si la case est une case terre, false sinon.
 	 */
 	protected boolean isLibre(int x, int y) {
 		boolean res = true;
-		
-		final Iterator<SingeErratique> it = this.erratiques.getSingesErratiques().iterator();
+
+		final Iterator<SingeErratique> it = this.erratiques
+				.getSingesErratiques().iterator();
 		while (res && it.hasNext()) {
 			if (it.next().coordonneesEgales(x, y)) {
 				res = false;
