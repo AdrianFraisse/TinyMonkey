@@ -106,8 +106,8 @@ public class VueCarte extends JPanel {
 	 */
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		dessineIle(g);
-		dessineGrille(g);
+		this.dessineIle(g);
+		this.dessineGrille(g);
 	}
 
 	/**

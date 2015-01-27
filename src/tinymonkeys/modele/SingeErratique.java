@@ -51,7 +51,7 @@ public class SingeErratique extends Singe {
 		listPos.add(new CaseVide(this.getX() + 1, this.getY()));
 		listPos.add(new CaseVide(this.getX() - 1, this.getY()));
 
-		CaseVide nextCase;
+		CaseVide nextCase = null;
 		do {
 			// Retrait alétoire d'une des positions, puis validation. Si la
 			// position est invalide, nouvelle tentative aléatoire.
@@ -62,8 +62,8 @@ public class SingeErratique extends Singe {
 				nextCase = null;
 			}
 		} while (nextCase != null
-				&& (!this.monkeyIsland.isTerre(nextCase.x, nextCase.y)
-				|| !this.monkeyIsland.isLibre(nextCase.x, nextCase.y)));
+				&& (!this.getMonkeyIsland().isTerre(nextCase.x, nextCase.y)
+				|| !this.getMonkeyIsland().isLibre(nextCase.x, nextCase.y)));
 
 		return nextCase;
 	}

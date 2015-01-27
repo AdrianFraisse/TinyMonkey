@@ -192,9 +192,9 @@ public class Ile {
 	 * Suppression du tresor.
 	 */
 	public void suppressionTresor() {
-		this.tresor = null;
 		Arrays.asList(this.ileEcouteurs.getListeners(IleEcouteur.class))
 				.forEach(listener -> listener.suppressionTresor());
+		this.creationTresor();
 	}
 
 	/**

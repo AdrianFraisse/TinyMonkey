@@ -27,12 +27,12 @@ public class Controleur {
 	/**
 	 * Emplacement de l'image du pirate.
 	 */
-	// private static final String IMAGE_PIRATE = "./img/Mon_pirate.png";
+	private static final String IMAGE_PIRATE = "./img/Mon_pirate.png";
 
 	/**
 	 * Le nombre de singes erratiques.
 	 */
-	// private static final int NOMBRE_SINGES_ERRATIQUES = 10;
+	private static final int NOMBRE_SINGES_ERRATIQUES = 10;
 
 	/**
 	 * Fenetre de l'interface graphique.
@@ -59,16 +59,14 @@ public class Controleur {
 		this.monkeyIsland.getSingesErratiques().enregistreEcBandeSinges(
 				this.fenetre);
 
-		// this.monkeyIsland.creationCarte(Controleur.exempleCarte());
+		this.monkeyIsland.creationCarte(Controleur.exempleCarte());
+		this.monkeyIsland.creationTresor();
+		
+		this.monkeyIsland.ajoutSingesErratiques(NOMBRE_SINGES_ERRATIQUES);
 
-		// this.monkeyIsland.creationTresor();
+		this.monkeyIsland.getPirate().enregistreEcPirate(this.fenetre);
+		this.monkeyIsland.ajoutPirate(IMAGE_PIRATE);
 
-		/*
-		 * this.monkeyIsland.ajoutSingesErratiques(NOMBRE_SINGES_ERRATIQUES);
-		 * 
-		 * this.monkeyIsland.getPirate().enregistreEcPirate(this.fenetre);
-		 * this.monkeyIsland.ajoutPirate(IMAGE_PIRATE);
-		 */
 	}
 
 	/**

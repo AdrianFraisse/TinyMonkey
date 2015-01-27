@@ -110,23 +110,28 @@ public class Pirate {
 		// Récupération des écouteurs
 		final List<PirateEcouteur> listeners = Arrays
 				.asList(this.pirateEcouteurs.getListeners(PirateEcouteur.class));
+		
+		// On ne procède au déplacement que s'il s'agit d'une case terre
 		if (this.monkeyIsland.isTerre(newX, newY)) {
 
-			if (!this.monkeyIsland.isLibre(newX, newY)) {
-				// Si la case n'est pas libre, le pirate est tombé sur un singe
-				listeners.forEach(listener -> listener.mortPirate(0));
-			} else if (this.monkeyIsland.getTresor().coordonneesEgales(newX, newY)) {
+			if (this.monkeyIsland.getTresor().coordonneesEgales(newX, newY)) {
 				// Le pirate a trouvé le trésor
 				this.monkeyIsland.suppressionTresor();
 			}
 			
-			// Dans tous les cas, on set sa position
+			// On set sa position
 			this.x = newX;
 			this.y = newY;
 			listeners.forEach(listener -> listener.deplacementPirate(0, this.x, this.y));
 		}
-		// Libération du clavier
-		listeners.forEach(listener -> listener.liberationClavier());
+		
+		if (!this.monkeyIsland.isLibre(newX, newY)) {
+			// Si la case n'est pas libre, le pirate est tombé sur un singe
+			listeners.forEach(listener -> listener.mortPirate(0));
+		} else {
+			// Sinon, libération du clavier
+			listeners.forEach(listener -> listener.liberationClavier());
+		}
 
 	}
 

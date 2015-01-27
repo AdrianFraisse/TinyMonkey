@@ -10,7 +10,7 @@ public abstract class Singe extends AbstractElement {
 	/**
 	 * Ile contenant tous les elements de celle-ci.
 	 */
-	protected Ile monkeyIsland;
+	private Ile monkeyIsland;
 
 	/**
 	 * Constructeur de la classe Singe.
@@ -21,7 +21,7 @@ public abstract class Singe extends AbstractElement {
 	 */
 	public Singe(int x, int y, Ile ile) {
 		super(x, y);
-		this.monkeyIsland = ile;
+		this.setMonkeyIsland(ile);
 	}
 
 	/**
@@ -29,4 +29,22 @@ public abstract class Singe extends AbstractElement {
 	 * singe (erratique, chasseur...).
 	 */
 	public abstract void deplacerSinge();
+
+	/**
+	 * Getter de monkeyIsland.
+	 * 
+	 * @return l'ile
+	 */
+	public Ile getMonkeyIsland() {
+		return this.monkeyIsland;
+	}
+
+	/**
+	 * Setter de monkeyIsland.
+	 * 
+	 * @param monkeyIsland l'ile à setter
+	 */
+	public void setMonkeyIsland(Ile monkeyIsland) {
+		this.monkeyIsland = monkeyIsland;
+	}
 }

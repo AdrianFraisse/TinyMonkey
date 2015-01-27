@@ -109,7 +109,7 @@ public class VueElement extends JPanel {
 	 */
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		dessineElement(g);
+		this.dessineElement(g);
 	}
 
 	/**

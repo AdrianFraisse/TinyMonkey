@@ -31,6 +31,6 @@ public class CaseVide extends AbstractElement {
 	 */
 	public static CaseVide genererCaseAleatoire(int largeurCarte, int longueurCarte) {
 		final Random random = new Random();
-		return new CaseVide(random.nextInt(largeurCarte + 1), random.nextInt(longueurCarte + 1));
+		return new CaseVide(random.nextInt(largeurCarte), random.nextInt(longueurCarte));
 	}
 }
