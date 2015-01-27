@@ -41,7 +41,7 @@ public class VueSingeErratique extends VuePersonnage {
 
 		try {
 			final File input = new File(IMAGE_SINGE_ERRATIQUE);
-			this.imageElement = ImageIO.read(input);
+			this.setImageElement(ImageIO.read(input));
 		} catch (IOException ie) {
 			System.out.println("Error:" + ie.getMessage());
 		}

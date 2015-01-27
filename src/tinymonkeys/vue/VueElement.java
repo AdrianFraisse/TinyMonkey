@@ -41,7 +41,7 @@ public class VueElement extends JPanel {
 	/**
 	 * Image d'un personnage.
 	 */
-	protected transient BufferedImage imageElement;
+	private transient BufferedImage imageElement;
 
 	/**
 	 * Taille de la case en nombre de pixels.
@@ -99,7 +99,7 @@ public class VueElement extends JPanel {
 		this.setBounds(xImage, yImage, this.tailleImage + 1,
 				this.tailleImage + 1);
 
-		this.imageElement = null;
+		this.setImageElement(null);
 	}
 
 	/**
@@ -118,7 +118,7 @@ public class VueElement extends JPanel {
 	 * @param g graphique dans lequel dessiner.
 	 */
 	protected void dessineElement(Graphics g) {
-		g.drawImage(this.imageElement, 0, 0, this.tailleImage,
+		g.drawImage(this.getImageElement(), 0, 0, this.tailleImage,
 				this.tailleImage, null);
 
 	}
@@ -146,6 +146,24 @@ public class VueElement extends JPanel {
 				+ DIFFERENCE_PLACEMENT_CASE_IMAGE;
 		this.setBounds(xImage, yImage, this.tailleImage + 1,
 				this.tailleImage + 1);
+	}
+
+	/**
+	 * Getter imageElement.
+	 * 
+	 * @return the imageElement
+	 */
+	protected BufferedImage getImageElement() {
+		return this.imageElement;
+	}
+
+	/**
+	 * Setter imageElement.
+	 * 
+	 * @param imageElement the imageElement to set
+	 */
+	protected void setImageElement(BufferedImage imageElement) {
+		this.imageElement = imageElement;
 	}
 
 }

@@ -56,7 +56,7 @@ public class VuePirate extends VuePersonnage {
 
 		try {
 			final File input = new File(avatarPirate);
-			this.imageElement = ImageIO.read(input);
+			this.setImageElement(ImageIO.read(input));
 		} catch (IOException ie) {
 			System.out.println(ERROR + ie.getMessage());
 		}
@@ -68,7 +68,7 @@ public class VuePirate extends VuePersonnage {
 	 */
 	@Override
 	public void dessineElement(Graphics g) {
-		g.drawImage(this.imageElement, 0, 0, this.tailleImage,
+		g.drawImage(this.getImageElement(), 0, 0, this.tailleImage,
 				this.tailleImage, null);
 	}
 
@@ -78,7 +78,7 @@ public class VuePirate extends VuePersonnage {
 	public void mortPirate() {
 		try {
 			final File input = new File(AVATAR_PIRATE_MORT);
-			this.imageElement = ImageIO.read(input);
+			this.setImageElement(ImageIO.read(input));
 		} catch (IOException ie) {
 			System.out.println(ERROR + ie.getMessage());
 		}
