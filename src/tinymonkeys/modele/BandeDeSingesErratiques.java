@@ -19,7 +19,7 @@ public class BandeDeSingesErratiques extends Thread {
 	/**
 	 * Temporisation entre chaque déplacement de singe.
 	 */
-	private static final int TEMPO_DEPLACEMENT = 50;
+	private static final int TEMPO_DEPLACEMENT = 100;
 
 	/**
 	 * Vecteur contenant l'ensemble des singes erratiques.
@@ -95,11 +95,6 @@ public class BandeDeSingesErratiques extends Thread {
 		while (true) {
 			// Déplace les singes, les uns après les autres, de manière temporisée
 			for (int i = 0; i < this.erratiques.size(); i++) {
-				try {
-					Thread.sleep(TEMPO_DEPLACEMENT);
-				} catch (InterruptedException e) {
-					System.err.println("Thread interrompu : " + e.getCause());
-				}
 				final SingeErratique singe = this.erratiques.get(i);
 				singe.deplacerSinge();
 				final int id = i;
@@ -109,6 +104,11 @@ public class BandeDeSingesErratiques extends Thread {
 						.forEach(
 								listener -> listener.deplacementSingeErratique(
 										id, singe.getX(), singe.getY()));
+			}
+			try {
+				Thread.sleep(TEMPO_DEPLACEMENT);
+			} catch (InterruptedException e) {
+				System.err.println("Thread interrompu : " + e.getCause());
 			}
 		}
 	}

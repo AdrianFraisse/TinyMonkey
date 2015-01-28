@@ -32,7 +32,7 @@ public class Controleur {
 	/**
 	 * Le nombre de singes erratiques.
 	 */
-	private static final int NOMBRE_SINGES_ERRATIQUES = 10;
+	private static final int NOMBRE_SINGES_ERRATIQUES = 50;
 
 	/**
 	 * Fenetre de l'interface graphique.

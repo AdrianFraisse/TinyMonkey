@@ -1,8 +1,8 @@
 package tinymonkeys.modele;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Classe du singe erratique.
@@ -32,6 +32,7 @@ public class SingeErratique extends Singe {
 		if (null != nextCase) {
 			// Si la case est null, on abandonne le déplacement
 			this.setPosition(nextCase.x, nextCase.y);
+			this.getMonkeyIsland().getPirate().tuerPirate(this);
 		}
 	}
 
@@ -42,7 +43,6 @@ public class SingeErratique extends Singe {
 	 * @return une CaseVide représentant la nouvelle position.
 	 */
 	private CaseVide getNextRandomPos() {
-		final Random random = new Random();
 
 		// Création d'une liste contenant les 4 déplacements possibles
 		final List<CaseVide> listPos = new ArrayList<CaseVide>();
@@ -50,13 +50,16 @@ public class SingeErratique extends Singe {
 		listPos.add(new CaseVide(this.getX(), this.getY() - 1));
 		listPos.add(new CaseVide(this.getX() + 1, this.getY()));
 		listPos.add(new CaseVide(this.getX() - 1, this.getY()));
-
+		
+		// Mélange de la liste
+		Collections.shuffle(listPos);
+		
 		CaseVide nextCase = null;
 		do {
-			// Retrait alétoire d'une des positions, puis validation. Si la
-			// position est invalide, nouvelle tentative aléatoire.
+			// Retrait de la première case
+			// Si la position est invalide, nouvelle tentative aléatoire.
 			try {
-				nextCase = listPos.remove(random.nextInt(listPos.size()));
+				nextCase = listPos.remove(0);
 			} catch (IndexOutOfBoundsException e) {
 				// Le déplacement est impossible
 				nextCase = null;

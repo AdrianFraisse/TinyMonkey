@@ -18,6 +18,11 @@ public class Pirate {
 	 * Le chemin vers l'image du pirate.
 	 */
 	private String avatar;
+	
+	/**
+	 * Attribut signifiant la vitalité du pirate.
+	 */
+	private boolean isVivant = true;
 
 	/**
 	 * Coordonnee en abscisse du pirate (indice dans la carte).
@@ -79,6 +84,19 @@ public class Pirate {
 	public int getY() {
 		return this.y;
 	}
+	
+	/**
+	 * Tue le pirate.
+	 * 
+	 * @param singe le singe essayant de tuer le pirate.
+	 */
+	public void tuerPirate(Singe singe) {
+		if (singe.coordonneesEgales(this.x, this.y)) {
+			this.isVivant = false;
+			Arrays.asList(this.pirateEcouteurs.getListeners(PirateEcouteur.class))
+			 	.forEach(listener -> listener.mortPirate(0));			
+		}
+	}
 
 	/**
 	 * Place le pirate a sa position initiale.
@@ -103,34 +121,37 @@ public class Pirate {
 	 * @param dy la direction en ordonnee (comprise entre -1 et 1).
 	 */
 	public void demandeDeplacement(int dx, int dy) {
-		// Si le déplacement n'est pas sur une case terre, on ne fait rien
-		final int newX = this.x + dx;
-		final int newY = this.y + dy;
-
-		// Récupération des écouteurs
-		final List<PirateEcouteur> listeners = Arrays
-				.asList(this.pirateEcouteurs.getListeners(PirateEcouteur.class));
 		
-		// On ne procède au déplacement que s'il s'agit d'une case terre
-		if (this.monkeyIsland.isTerre(newX, newY)) {
-
-			if (this.monkeyIsland.getTresor().coordonneesEgales(newX, newY)) {
-				// Le pirate a trouvé le trésor
-				this.monkeyIsland.suppressionTresor();
+		if (this.isVivant) {
+			final int newX = this.x + dx;
+			final int newY = this.y + dy;
+	
+			// Récupération des écouteurs
+			final List<PirateEcouteur> listeners = Arrays
+					.asList(this.pirateEcouteurs.getListeners(PirateEcouteur.class));
+			
+			// On ne procède au déplacement que s'il s'agit d'une case terre
+			if (this.monkeyIsland.isTerre(newX, newY)) {
+	
+				if (this.monkeyIsland.getTresor().coordonneesEgales(newX, newY)) {
+					// Le pirate a trouvé le trésor
+					this.monkeyIsland.suppressionTresor();
+				}
+				
+				// On set sa position
+				this.x = newX;
+				this.y = newY;
+				listeners.forEach(listener -> listener.deplacementPirate(0, this.x, this.y));
 			}
 			
-			// On set sa position
-			this.x = newX;
-			this.y = newY;
-			listeners.forEach(listener -> listener.deplacementPirate(0, this.x, this.y));
-		}
-		
-		if (!this.monkeyIsland.isLibre(newX, newY)) {
-			// Si la case n'est pas libre, le pirate est tombé sur un singe
-			listeners.forEach(listener -> listener.mortPirate(0));
-		} else {
-			// Sinon, libération du clavier
-			listeners.forEach(listener -> listener.liberationClavier());
+			if (!this.monkeyIsland.isLibre(newX, newY)) {
+				// Si la case n'est pas libre, le pirate est tombé sur un singe
+				this.isVivant = false;
+				listeners.forEach(listener -> listener.mortPirate(0));
+			} else {
+				// Sinon, libération du clavier
+				listeners.forEach(listener -> listener.liberationClavier());
+			}
 		}
 
 	}
