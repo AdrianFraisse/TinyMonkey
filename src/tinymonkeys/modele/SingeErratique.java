@@ -42,7 +42,7 @@ public class SingeErratique extends Singe {
 	 * 
 	 * @return une CaseVide représentant la nouvelle position.
 	 */
-	private CaseVide getNextRandomPos() {
+	protected CaseVide getNextRandomPos() {
 
 		// Création d'une liste contenant les 4 déplacements possibles
 		final List<CaseVide> listPos = new ArrayList<CaseVide>();
