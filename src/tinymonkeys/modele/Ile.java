@@ -126,10 +126,20 @@ public class Ile {
 		do {
 			newCase = CaseVide.genererCaseAleatoire(this.getLargeurCarte(),
 					this.getLongueurCarte());
-		} while (!this.isTerre(newCase.x, newCase.y)
-				|| !this.isLibre(newCase.x, newCase.y));
+		} while (!this.isDeplacementPossible(newCase.x, newCase.y));
 
 		this.pirate.positionInitiale(newCase.x, newCase.y);
+	}
+
+	/**
+	 * Valide un déplacement.
+	 * 
+	 * @param x la direction en abscisse.
+	 * @param y la direction en ordonnee.
+	 * @return true si le déplacement est possible
+	 */
+	protected boolean isDeplacementPossible(int x, int y) {
+		return this.isTerre(x, y) && this.isLibre(x, y);
 	}
 
 	/**

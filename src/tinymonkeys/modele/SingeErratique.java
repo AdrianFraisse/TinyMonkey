@@ -65,8 +65,7 @@ public class SingeErratique extends Singe {
 				nextCase = null;
 			}
 		} while (nextCase != null
-				&& (!this.getMonkeyIsland().isTerre(nextCase.x, nextCase.y)
-				|| !this.getMonkeyIsland().isLibre(nextCase.x, nextCase.y)));
+				&& !this.getMonkeyIsland().isDeplacementPossible(nextCase.x, nextCase.y));
 
 		return nextCase;
 	}

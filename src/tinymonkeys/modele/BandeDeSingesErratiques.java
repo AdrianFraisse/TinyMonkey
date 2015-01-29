@@ -64,11 +64,19 @@ public class BandeDeSingesErratiques extends Thread {
 	 * @param n le nombre de singes a ajouter.
 	 */
 	public void ajoutSingesErratiques(int n) {
+		
 		// On récupère toutes les cases terre
-		final List<CaseVide> casesTerre = this.monkeyIsland.genererListCasesTerre();		
+		final List<CaseVide> casesTerre = this.monkeyIsland.genererListCasesTerre();
+		
+		// Si n est supérieur au nombre de case disponibles, on prend cette valeur (- 2 pour laisser une case au pirate)
+		int nombreSinges = n;
+		if (n >= casesTerre.size()) {
+			nombreSinges = casesTerre.size() - 2;
+		}
+		
 		final Random random = new Random();
 		
-		for (int i=0; i<n; i++) {
+		for (int i=0; i<nombreSinges; i++) {
 			// On prend une case terre de manière aléatoire
 			final CaseVide nextCase = casesTerre.remove(random.nextInt(casesTerre.size() + 1));
 			this.erratiques.add(new SingeErratique(nextCase.x, nextCase.y, this.monkeyIsland));

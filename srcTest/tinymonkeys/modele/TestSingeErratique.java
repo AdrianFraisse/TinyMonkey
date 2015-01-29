@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import org.easymock.Capture;
 import org.easymock.EasyMock;
+import org.easymock.IAnswer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,8 +41,7 @@ public class TestSingeErratique {
 		Capture<Integer> capturedY = EasyMock.newCapture();
 		
 		// La première case valide est retournée
-		EasyMock.expect(islandMock.isTerre(EasyMock.anyInt(), EasyMock.anyInt())).andReturn(true).once();
-		EasyMock.expect(islandMock.isLibre(EasyMock.captureInt(capturedX), EasyMock.captureInt(capturedY))).andReturn(true).once();
+		EasyMock.expect(islandMock.isDeplacementPossible(EasyMock.captureInt(capturedX), EasyMock.captureInt(capturedY))).andReturn(true).once();
 		
 		EasyMock.replay(islandMock);
 		
@@ -54,8 +54,7 @@ public class TestSingeErratique {
 	
 	@Test
 	public void testDeplacementSinge() {
-		EasyMock.expect(islandMock.isTerre(EasyMock.anyInt(), EasyMock.anyInt())).andReturn(true).once();
-		EasyMock.expect(islandMock.isLibre(EasyMock.anyInt(), EasyMock.anyInt())).andReturn(true).once();
+		EasyMock.expect(islandMock.isDeplacementPossible(EasyMock.anyInt(), EasyMock.anyInt())).andReturn(true).once();
 		EasyMock.expect(islandMock.getPirate()).andReturn(pirateMock).once();
 		
 		pirateMock.tuerPirate(singe);
@@ -79,12 +78,10 @@ public class TestSingeErratique {
 	 */
 	@Test
 	public void testDeplacementSingeUneDirection() {
-		EasyMock.expect(islandMock.isTerre(ABSCISSE_DROITE, ORDONNEE)).andStubReturn(false);
-		EasyMock.expect(islandMock.isTerre(ABSCISSE_GAUCHE, ORDONNEE)).andStubReturn(false);
-		EasyMock.expect(islandMock.isTerre(ABSCISSE, ORDONNEE_BAS)).andStubReturn(true);
-		EasyMock.expect(islandMock.isLibre(ABSCISSE, ORDONNEE_BAS)).andStubReturn(false);
-		EasyMock.expect(islandMock.isTerre(ABSCISSE,  ORDONNEE_HAUT)).andReturn(true).once();
-		EasyMock.expect(islandMock.isLibre(ABSCISSE, ORDONNEE_HAUT)).andReturn(true).once();
+		EasyMock.expect(islandMock.isDeplacementPossible(ABSCISSE_DROITE, ORDONNEE)).andStubReturn(false);
+		EasyMock.expect(islandMock.isDeplacementPossible(ABSCISSE_GAUCHE, ORDONNEE)).andStubReturn(false);
+		EasyMock.expect(islandMock.isDeplacementPossible(ABSCISSE, ORDONNEE_BAS)).andStubReturn(false);
+		EasyMock.expect(islandMock.isDeplacementPossible(ABSCISSE, ORDONNEE_HAUT)).andReturn(true).once();
 		
 		EasyMock.expect(islandMock.getPirate()).andReturn(pirateMock).once();
 		pirateMock.tuerPirate(singe);
@@ -102,9 +99,21 @@ public class TestSingeErratique {
 	}
 	
 	@Test
+	public void testDeplacementSingeImpossible() {
+		EasyMock.expect(islandMock.isDeplacementPossible(EasyMock.anyInt(), EasyMock.anyInt())).andStubReturn(false);
+		
+		EasyMock.replay(islandMock);
+		
+		singe.deplacerSinge();
+		
+		EasyMock.verify(islandMock);
+		
+		assertTrue("Singe non déplacé", singe.coordonneesEgales(ABSCISSE, ORDONNEE));
+	}
+	
+	@Test
 	public void testEquiprobabilite4Cases() {
-		EasyMock.expect(islandMock.isTerre(EasyMock.anyInt(), EasyMock.anyInt())).andStubReturn(true);
-		EasyMock.expect(islandMock.isLibre(EasyMock.anyInt(), EasyMock.anyInt())).andStubReturn(true);
+		EasyMock.expect(islandMock.isDeplacementPossible(EasyMock.anyInt(), EasyMock.anyInt())).andStubReturn(true);
 		
 		EasyMock.expect(islandMock.getPirate()).andStubReturn(pirateMock);
 		pirateMock.tuerPirate(singe);
@@ -139,6 +148,101 @@ public class TestSingeErratique {
 		EasyMock.verify(islandMock);
 		EasyMock.verify(pirateMock);
 	}
-	// Vérif equiprobabilité des 4 directions
+	
+	@Test
+	public void testEquiprobabilite3Cases() {
+		
+		EasyMock.expect(islandMock.isDeplacementPossible(EasyMock.anyInt(), EasyMock.anyInt())).andStubAnswer(
+				new IAnswer<Boolean>() {
+
+					@Override
+					public Boolean answer() throws Throwable {
+						int x = (int) EasyMock.getCurrentArguments()[0];
+						int y = (int) EasyMock.getCurrentArguments()[1];
+						return !(x == singe.getX() && y == singe.getY() + 1);
+					}
+				});
+		
+		EasyMock.expect(islandMock.getPirate()).andStubReturn(pirateMock);
+		pirateMock.tuerPirate(singe);
+		EasyMock.expectLastCall().anyTimes();
+		
+		EasyMock.replay(islandMock);
+		EasyMock.replay(pirateMock);
+		
+		int deplacementsHaut = 0;
+		int deplacementsBas = 0;
+		int deplacementsGauche = 0;
+		int deplacementsDroite = 0;
+		
+		int previousX = ABSCISSE;
+		int previousY = ORDONNEE;
+		
+		for (int i = 0; i < NB_IT; i++) {
+			singe.deplacerSinge();
+			if (singe.x == previousX && singe.y == (previousY + 1)) deplacementsHaut++;
+			else if (singe.x == previousX && singe.y == (previousY - 1)) deplacementsBas++;
+			else if (singe.x == (previousX + 1) && singe.y == previousY) deplacementsDroite++;
+			else if (singe.x == (previousX - 1) && singe.y == previousY) deplacementsGauche++;
+			previousX = singe.x;
+			previousY = singe.y;
+		}
+		
+		assertTrue("Equiprobabilité des 4 cases - Deplacement Bas", (((float) deplacementsBas/NB_IT) > 0.32 &&  0.34 > ((float) deplacementsBas/NB_IT)));
+		assertTrue("Equiprobabilité des 4 cases - Aucun deplacement Haut", (deplacementsHaut == 0));
+		assertTrue("Equiprobabilité des 4 cases - Deplacement Gauche", (((float) deplacementsGauche/NB_IT) > 0.32 &&  0.34 > ((float) deplacementsGauche/NB_IT)));
+		assertTrue("Equiprobabilité des 4 cases - Deplacement Droite", (((float) deplacementsDroite/NB_IT) > 0.32 &&  0.34 > ((float) deplacementsDroite/NB_IT)));
+		
+		EasyMock.verify(islandMock);
+		EasyMock.verify(pirateMock);
+	}
+	
+	@Test
+	public void testEquiprobabilite2Cases() {
+		
+		EasyMock.expect(islandMock.isDeplacementPossible(EasyMock.anyInt(), EasyMock.anyInt())).andStubAnswer(
+				new IAnswer<Boolean>() {
+
+					@Override
+					public Boolean answer() throws Throwable {
+						int x = (int) EasyMock.getCurrentArguments()[0];
+						int y = (int) EasyMock.getCurrentArguments()[1];
+						return !((x == singe.getX() && y == singe.getY() + 1) || (x == singe.getX() - 1 && y == singe.getY()));
+					}
+				});
+		
+		EasyMock.expect(islandMock.getPirate()).andStubReturn(pirateMock);
+		pirateMock.tuerPirate(singe);
+		EasyMock.expectLastCall().anyTimes();
+		
+		EasyMock.replay(islandMock);
+		EasyMock.replay(pirateMock);
+		
+		int deplacementsHaut = 0;
+		int deplacementsBas = 0;
+		int deplacementsGauche = 0;
+		int deplacementsDroite = 0;
+		
+		int previousX = ABSCISSE;
+		int previousY = ORDONNEE;
+		
+		for (int i = 0; i < NB_IT; i++) {
+			singe.deplacerSinge();
+			if (singe.x == previousX && singe.y == (previousY + 1)) deplacementsHaut++;
+			else if (singe.x == previousX && singe.y == (previousY - 1)) deplacementsBas++;
+			else if (singe.x == (previousX + 1) && singe.y == previousY) deplacementsDroite++;
+			else if (singe.x == (previousX - 1) && singe.y == previousY) deplacementsGauche++;
+			previousX = singe.x;
+			previousY = singe.y;
+		}
+		
+		assertTrue("Equiprobabilité des 4 cases - Deplacement Bas", (((float) deplacementsBas/NB_IT) > 0.49 &&  0.51 > ((float) deplacementsBas/NB_IT)));
+		assertTrue("Equiprobabilité des 4 cases - Aucun deplacement Haut", (deplacementsHaut == 0));
+		assertTrue("Equiprobabilité des 4 cases - Aucun deplacement Gauche", (deplacementsGauche == 0));
+		assertTrue("Equiprobabilité des 4 cases - Deplacement Droite", (((float) deplacementsDroite/NB_IT) > 0.49 &&  0.51 > ((float) deplacementsDroite/NB_IT)));
+		
+		EasyMock.verify(islandMock);
+		EasyMock.verify(pirateMock);
+	}
 	
 }
