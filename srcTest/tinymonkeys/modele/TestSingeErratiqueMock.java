@@ -5,11 +5,17 @@ import static org.junit.Assert.*;
 import org.easymock.Capture;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class TestSingeErratique {
+/**
+ * @author Adrian
+ * @version 1.0
+ * 
+ * Classe de tests unitaires de la classe SingeErratique.
+ * Utilise des mocks des classes Ile et Pirate.
+ */
+public class TestSingeErratiqueMock {
 	
 	private static final int NB_IT = 100000;
 	private static final int ORDONNEE = 13;
@@ -22,23 +28,29 @@ public class TestSingeErratique {
 	private SingeErratique singe;
 	private Ile islandMock;
 	private Pirate pirateMock;
-
+	
+	/**
+	 * Méthode éxecutée avant chaque test.
+	 * @throws Exception
+	 */
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() {
 		islandMock = EasyMock.createMock(Ile.class);
 		pirateMock = EasyMock.createMock(Pirate.class);
 		singe = new SingeErratique(ABSCISSE, ORDONNEE, islandMock);
 	}
 
-	@After
-	public void tearDown() throws Exception {
-	}
-
+	/**
+	 * Assure, à l'aide d'une capture des paramètres de la méthode 
+	 * de vérification des déplacements de l'île,
+	 * que la case retournée par getNextRandomPos() 
+	 * est bien la première validée par l'île.
+	 */
 	@Test
 	public void testGetNextRandomPos() {
 		// Test case libre
-		Capture<Integer> capturedX = EasyMock.newCapture();
-		Capture<Integer> capturedY = EasyMock.newCapture();
+		final Capture<Integer> capturedX = EasyMock.newCapture();
+		final Capture<Integer> capturedY = EasyMock.newCapture();
 		
 		// La première case valide est retournée
 		EasyMock.expect(islandMock.isDeplacementPossible(EasyMock.captureInt(capturedX), EasyMock.captureInt(capturedY))).andReturn(true).once();
@@ -52,6 +64,10 @@ public class TestSingeErratique {
 		EasyMock.verify(islandMock);
 	}
 	
+	/**
+	 * Teste unitairement le déplacement nominal d'un singe :
+	 * Déplacement dans une direction aléatoire puis tentative de meurtre du pirate.
+	 */
 	@Test
 	public void testDeplacementSinge() {
 		EasyMock.expect(islandMock.isDeplacementPossible(EasyMock.anyInt(), EasyMock.anyInt())).andReturn(true).once();
@@ -74,7 +90,7 @@ public class TestSingeErratique {
 	}
 	
 	/**
-	 * Test le blocage du singe dans trois directions
+	 * Test le blocage du singe dans trois directions.
 	 */
 	@Test
 	public void testDeplacementSingeUneDirection() {
@@ -98,6 +114,9 @@ public class TestSingeErratique {
 		assertTrue("Singe non déplacé sur la case haute", singe.coordonneesEgales(ABSCISSE, ORDONNEE_HAUT));
 	}
 	
+	/**
+	 * Vérifie que le singe reste à sa position actuelle si aucun déplacement ne lui est possible. 
+	 */
 	@Test
 	public void testDeplacementSingeImpossible() {
 		EasyMock.expect(islandMock.isDeplacementPossible(EasyMock.anyInt(), EasyMock.anyInt())).andStubReturn(false);
@@ -111,6 +130,10 @@ public class TestSingeErratique {
 		assertTrue("Singe non déplacé", singe.coordonneesEgales(ABSCISSE, ORDONNEE));
 	}
 	
+	/**
+	 * Verifie l'équiprobabilité de la distribution des déplacements du singe 
+	 * erratique dans le cas où 4 déplacements sont possibles.
+	 */
 	@Test
 	public void testEquiprobabilite4Cases() {
 		EasyMock.expect(islandMock.isDeplacementPossible(EasyMock.anyInt(), EasyMock.anyInt())).andStubReturn(true);
@@ -122,10 +145,10 @@ public class TestSingeErratique {
 		EasyMock.replay(islandMock);
 		EasyMock.replay(pirateMock);
 		
-		int deplacementsHaut = 0;
-		int deplacementsBas = 0;
-		int deplacementsGauche = 0;
-		int deplacementsDroite = 0;
+		int deplacementsHaut = 0; // NOPMD by Adrian on 22/02/15 17:12 - Faux positif anomalie DD
+		int deplacementsBas = 0; // NOPMD by Adrian on 22/02/15 17:12 - Faux positif anomalie DD
+		int deplacementsGauche = 0; // NOPMD by Adrian on 22/02/15 17:12 - Faux positif anomalie DD
+		int deplacementsDroite = 0; // NOPMD by Adrian on 22/02/15 17:12 - Faux positif anomalie DD
 		
 		int previousX = ABSCISSE;
 		int previousY = ORDONNEE;
@@ -140,15 +163,19 @@ public class TestSingeErratique {
 			previousY = singe.y;
 		}
 		
-		assertTrue("Equiprobabilité des 4 cases - Deplacement Bas", (((float) deplacementsBas/NB_IT) > 0.24 &&  0.26 > ((float) deplacementsBas/NB_IT)));
-		assertTrue("Equiprobabilité des 4 cases - Deplacement Haut", (((float) deplacementsHaut/NB_IT) > 0.24 &&  0.26 > ((float) deplacementsHaut/NB_IT)));
-		assertTrue("Equiprobabilité des 4 cases - Deplacement Gauche", (((float) deplacementsGauche/NB_IT) > 0.24 &&  0.26 > ((float) deplacementsGauche/NB_IT)));
-		assertTrue("Equiprobabilité des 4 cases - Deplacement Droite", (((float) deplacementsDroite/NB_IT) > 0.24 &&  0.26 > ((float) deplacementsDroite/NB_IT)));
+		assertTrue("Equiprobabilité des 4 cases - Deplacement Bas", ((float) deplacementsBas/NB_IT) > 0.24 &&  0.26 > ((float) deplacementsBas/NB_IT));
+		assertTrue("Equiprobabilité des 4 cases - Deplacement Haut", ((float) deplacementsHaut/NB_IT) > 0.24 &&  0.26 > ((float) deplacementsHaut/NB_IT));
+		assertTrue("Equiprobabilité des 4 cases - Deplacement Gauche", ((float) deplacementsGauche/NB_IT) > 0.24 &&  0.26 > ((float) deplacementsGauche/NB_IT));
+		assertTrue("Equiprobabilité des 4 cases - Deplacement Droite", ((float) deplacementsDroite/NB_IT) > 0.24 &&  0.26 > ((float) deplacementsDroite/NB_IT));
 		
 		EasyMock.verify(islandMock);
 		EasyMock.verify(pirateMock);
 	}
 	
+	/**
+	 * Verifie l'équiprobabilité de la distribution des déplacements du singe 
+	 * erratique dans le cas où seuls 3 déplacements sont possibles.
+	 */
 	@Test
 	public void testEquiprobabilite3Cases() {
 		
@@ -188,15 +215,19 @@ public class TestSingeErratique {
 			previousY = singe.y;
 		}
 		
-		assertTrue("Equiprobabilité des 4 cases - Deplacement Bas", (((float) deplacementsBas/NB_IT) > 0.32 &&  0.34 > ((float) deplacementsBas/NB_IT)));
-		assertTrue("Equiprobabilité des 4 cases - Aucun deplacement Haut", (deplacementsHaut == 0));
-		assertTrue("Equiprobabilité des 4 cases - Deplacement Gauche", (((float) deplacementsGauche/NB_IT) > 0.32 &&  0.34 > ((float) deplacementsGauche/NB_IT)));
-		assertTrue("Equiprobabilité des 4 cases - Deplacement Droite", (((float) deplacementsDroite/NB_IT) > 0.32 &&  0.34 > ((float) deplacementsDroite/NB_IT)));
+		assertTrue("Equiprobabilité des 4 cases - Deplacement Bas", ((float) deplacementsBas/NB_IT) > 0.32 &&  0.34 > ((float) deplacementsBas/NB_IT));
+		assertEquals("Equiprobabilité des 4 cases - Aucun deplacement Haut", 0, deplacementsHaut);
+		assertTrue("Equiprobabilité des 4 cases - Deplacement Gauche", ((float) deplacementsGauche/NB_IT) > 0.32 &&  0.34 > ((float) deplacementsGauche/NB_IT));
+		assertTrue("Equiprobabilité des 4 cases - Deplacement Droite", ((float) deplacementsDroite/NB_IT) > 0.32 &&  0.34 > ((float) deplacementsDroite/NB_IT));
 		
 		EasyMock.verify(islandMock);
 		EasyMock.verify(pirateMock);
 	}
 	
+	/**
+	 * Verifie l'équiprobabilité de la distribution des déplacements du singe 
+	 * erratique dans le cas où seuls 2 déplacements sont possibles.
+	 */
 	@Test
 	public void testEquiprobabilite2Cases() {
 		
@@ -207,7 +238,7 @@ public class TestSingeErratique {
 					public Boolean answer() throws Throwable {
 						int x = (int) EasyMock.getCurrentArguments()[0];
 						int y = (int) EasyMock.getCurrentArguments()[1];
-						return !((x == singe.getX() && y == singe.getY() + 1) || (x == singe.getX() - 1 && y == singe.getY()));
+						return !(x == singe.getX() && y == singe.getY() + 1 || x == singe.getX() - 1 && y == singe.getY());
 					}
 				});
 		
@@ -236,10 +267,10 @@ public class TestSingeErratique {
 			previousY = singe.y;
 		}
 		
-		assertTrue("Equiprobabilité des 4 cases - Deplacement Bas", (((float) deplacementsBas/NB_IT) > 0.49 &&  0.51 > ((float) deplacementsBas/NB_IT)));
-		assertTrue("Equiprobabilité des 4 cases - Aucun deplacement Haut", (deplacementsHaut == 0));
-		assertTrue("Equiprobabilité des 4 cases - Aucun deplacement Gauche", (deplacementsGauche == 0));
-		assertTrue("Equiprobabilité des 4 cases - Deplacement Droite", (((float) deplacementsDroite/NB_IT) > 0.49 &&  0.51 > ((float) deplacementsDroite/NB_IT)));
+		assertTrue("Equiprobabilité des 4 cases - Deplacement Bas", ((float) deplacementsBas/NB_IT) > 0.49 &&  0.51 > ((float) deplacementsBas/NB_IT));
+		assertEquals("Equiprobabilité des 4 cases - Aucun deplacement Haut", 0, deplacementsHaut);
+		assertEquals("Equiprobabilité des 4 cases - Aucun deplacement Gauche", 0, deplacementsGauche);
+		assertTrue("Equiprobabilité des 4 cases - Deplacement Droite", ((float) deplacementsDroite/NB_IT) > 0.49 &&  0.51 > ((float) deplacementsDroite/NB_IT));
 		
 		EasyMock.verify(islandMock);
 		EasyMock.verify(pirateMock);
