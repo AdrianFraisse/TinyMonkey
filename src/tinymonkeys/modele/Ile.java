@@ -243,7 +243,7 @@ public class Ile {
 	 * @return true si la case est une case terre, false sinon.
 	 */
 	protected boolean isTerre(int x, int y) {
-		return x <= this.getLargeurCarte() && y <= this.getLongueurCarte()
+		return x < this.getLargeurCarte() && y < this.getLongueurCarte()
 				&& this.valeurCarte(x, y) == 1;
 	}
 

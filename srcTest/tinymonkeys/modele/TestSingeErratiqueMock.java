@@ -9,7 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * @author Adrian
+ * @author Adrian Fraisse
  * @version 1.0
  * 
  * Classe de tests unitaires de la classe SingeErratique.
@@ -17,7 +17,7 @@ import org.junit.Test;
  */
 public class TestSingeErratiqueMock {
 	
-	private static final int NB_IT = 100000;
+	private static final int NB_IT = 1000000;
 	private static final int ORDONNEE = 13;
 	private static final int ORDONNEE_HAUT = 14;
 	private static final int ORDONNEE_BAS = 12;
@@ -31,7 +31,6 @@ public class TestSingeErratiqueMock {
 	
 	/**
 	 * Méthode éxecutée avant chaque test.
-	 * @throws Exception
 	 */
 	@Before
 	public void setUp() {
@@ -90,6 +89,22 @@ public class TestSingeErratiqueMock {
 	}
 	
 	/**
+	 * Vérifie que le singe reste à sa position actuelle si aucun déplacement ne lui est possible. 
+	 */
+	@Test
+	public void testDeplacementSingeImpossible() {
+		EasyMock.expect(islandMock.isDeplacementPossible(EasyMock.anyInt(), EasyMock.anyInt())).andStubReturn(false);
+		
+		EasyMock.replay(islandMock);
+		
+		singe.deplacerSinge();
+		
+		EasyMock.verify(islandMock);
+		
+		assertTrue("Singe non déplacé", singe.coordonneesEgales(ABSCISSE, ORDONNEE));
+	}
+	
+	/**
 	 * Test le blocage du singe dans trois directions.
 	 */
 	@Test
@@ -115,19 +130,56 @@ public class TestSingeErratiqueMock {
 	}
 	
 	/**
-	 * Vérifie que le singe reste à sa position actuelle si aucun déplacement ne lui est possible. 
+	 * Teste le blocage du singe dans 2 directions.
+	 * 
 	 */
 	@Test
-	public void testDeplacementSingeImpossible() {
-		EasyMock.expect(islandMock.isDeplacementPossible(EasyMock.anyInt(), EasyMock.anyInt())).andStubReturn(false);
+	public void testDeplacementSinge2Directions() {
+		EasyMock.expect(islandMock.isDeplacementPossible(ABSCISSE_DROITE, ORDONNEE)).andStubReturn(false);
+		EasyMock.expect(islandMock.isDeplacementPossible(ABSCISSE_GAUCHE, ORDONNEE)).andStubReturn(true);
+		EasyMock.expect(islandMock.isDeplacementPossible(ABSCISSE, ORDONNEE_BAS)).andStubReturn(false);
+		EasyMock.expect(islandMock.isDeplacementPossible(ABSCISSE, ORDONNEE_HAUT)).andStubReturn(true);
+		
+		EasyMock.expect(islandMock.getPirate()).andReturn(pirateMock).once();
+		pirateMock.tuerPirate(singe);
+		EasyMock.expectLastCall().once();
 		
 		EasyMock.replay(islandMock);
+		EasyMock.replay(pirateMock);
 		
 		singe.deplacerSinge();
 		
 		EasyMock.verify(islandMock);
+		EasyMock.verify(pirateMock);
 		
-		assertTrue("Singe non déplacé", singe.coordonneesEgales(ABSCISSE, ORDONNEE));
+		assertTrue("Singe déplacé en bas ou à droite", singe.coordonneesEgales(ABSCISSE, ORDONNEE_HAUT) || singe.coordonneesEgales(ABSCISSE_GAUCHE, ORDONNEE));
+	}
+	
+	/**
+	 * Teste le blocage du singe dans 1 direction.
+	 * 
+	 */
+	@Test
+	public void testDeplacementSinge3Directions() {
+		EasyMock.expect(islandMock.isDeplacementPossible(ABSCISSE_DROITE, ORDONNEE)).andStubReturn(true);
+		EasyMock.expect(islandMock.isDeplacementPossible(ABSCISSE_GAUCHE, ORDONNEE)).andStubReturn(true);
+		EasyMock.expect(islandMock.isDeplacementPossible(ABSCISSE, ORDONNEE_BAS)).andStubReturn(false);
+		EasyMock.expect(islandMock.isDeplacementPossible(ABSCISSE, ORDONNEE_HAUT)).andStubReturn(true);
+		
+		EasyMock.expect(islandMock.getPirate()).andReturn(pirateMock).once();
+		pirateMock.tuerPirate(singe);
+		EasyMock.expectLastCall().once();
+		
+		EasyMock.replay(islandMock);
+		EasyMock.replay(pirateMock);
+		
+		singe.deplacerSinge();
+		
+		EasyMock.verify(islandMock);
+		EasyMock.verify(pirateMock);
+		
+		assertTrue("Singe déplacé en bas", singe.coordonneesEgales(ABSCISSE, ORDONNEE_HAUT) || 
+				singe.coordonneesEgales(ABSCISSE_GAUCHE, ORDONNEE) || singe.coordonneesEgales(ABSCISSE_DROITE, ORDONNEE));
 	}
 	
 	/**
@@ -145,20 +197,20 @@ public class TestSingeErratiqueMock {
 		EasyMock.replay(islandMock);
 		EasyMock.replay(pirateMock);
 		
-		int deplacementsHaut = 0; // NOPMD by Adrian on 22/02/15 17:12 - Faux positif anomalie DD
-		int deplacementsBas = 0; // NOPMD by Adrian on 22/02/15 17:12 - Faux positif anomalie DD
-		int deplacementsGauche = 0; // NOPMD by Adrian on 22/02/15 17:12 - Faux positif anomalie DD
-		int deplacementsDroite = 0; // NOPMD by Adrian on 22/02/15 17:12 - Faux positif anomalie DD
+		int deplacementsHaut = 0;
+		int deplacementsBas = 0;
+		int deplacementsGauche = 0;
+		int deplacementsDroite = 0;
 		
 		int previousX = ABSCISSE;
 		int previousY = ORDONNEE;
 		
 		for (int i = 0; i < NB_IT; i++) {
 			singe.deplacerSinge();
-			if (singe.x == previousX && singe.y == (previousY + 1)) deplacementsHaut++;
-			else if (singe.x == previousX && singe.y == (previousY - 1)) deplacementsBas++;
-			else if (singe.x == (previousX + 1) && singe.y == previousY) deplacementsDroite++;
-			else if (singe.x == (previousX - 1) && singe.y == previousY) deplacementsGauche++;
+			if (singe.x == previousX && singe.y == (previousY + 1)) ++deplacementsHaut;
+			else if (singe.x == previousX && singe.y == (previousY - 1)) ++deplacementsBas;
+			else if (singe.x == (previousX + 1) && singe.y == previousY) ++deplacementsDroite;
+			else if (singe.x == (previousX - 1) && singe.y == previousY) ++deplacementsGauche;
 			previousX = singe.x;
 			previousY = singe.y;
 		}
@@ -207,10 +259,10 @@ public class TestSingeErratiqueMock {
 		
 		for (int i = 0; i < NB_IT; i++) {
 			singe.deplacerSinge();
-			if (singe.x == previousX && singe.y == (previousY + 1)) deplacementsHaut++;
-			else if (singe.x == previousX && singe.y == (previousY - 1)) deplacementsBas++;
-			else if (singe.x == (previousX + 1) && singe.y == previousY) deplacementsDroite++;
-			else if (singe.x == (previousX - 1) && singe.y == previousY) deplacementsGauche++;
+			if (singe.x == previousX && singe.y == (previousY + 1)) ++deplacementsHaut;
+			else if (singe.x == previousX && singe.y == (previousY - 1)) ++deplacementsBas;
+			else if (singe.x == (previousX + 1) && singe.y == previousY) ++deplacementsDroite;
+			else if (singe.x == (previousX - 1) && singe.y == previousY) ++deplacementsGauche;
 			previousX = singe.x;
 			previousY = singe.y;
 		}
@@ -259,10 +311,10 @@ public class TestSingeErratiqueMock {
 		
 		for (int i = 0; i < NB_IT; i++) {
 			singe.deplacerSinge();
-			if (singe.x == previousX && singe.y == (previousY + 1)) deplacementsHaut++;
-			else if (singe.x == previousX && singe.y == (previousY - 1)) deplacementsBas++;
-			else if (singe.x == (previousX + 1) && singe.y == previousY) deplacementsDroite++;
-			else if (singe.x == (previousX - 1) && singe.y == previousY) deplacementsGauche++;
+			if (singe.x == previousX && singe.y == (previousY + 1)) ++deplacementsHaut;
+			else if (singe.x == previousX && singe.y == (previousY - 1)) ++deplacementsBas;
+			else if (singe.x == (previousX + 1) && singe.y == previousY) ++deplacementsDroite;
+			else if (singe.x == (previousX - 1) && singe.y == previousY) ++deplacementsGauche;
 			previousX = singe.x;
 			previousY = singe.y;
 		}

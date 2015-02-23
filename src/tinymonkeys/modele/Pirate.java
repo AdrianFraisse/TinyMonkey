@@ -153,7 +153,15 @@ public class Pirate {
 				listeners.forEach(listener -> listener.liberationClavier());
 			}
 		}
-
+	}
+	
+	/**
+	 * Accesseur en lecture de la santé du pirate.
+	 * 
+	 * @return true si le pirate est en vie.
+	 */
+	protected boolean isVivant() {
+		return this.isVivant;
 	}
 
 	/**

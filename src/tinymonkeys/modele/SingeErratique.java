@@ -54,13 +54,19 @@ public class SingeErratique extends Singe {
 		// Mélange de la liste
 		Collections.shuffle(listPos);
 		
-		CaseVide nextCase; // NOPMD by Adrian on 22/02/15 16:42
+		CaseVide nextCase;
 		do {
-			// Retrait de la première case. 
+			// Retrait de la première case
 			// Si la position est invalide, nouvelle tentative aléatoire.
-			nextCase = listPos.remove(0);
-		} while (!listPos.isEmpty()
+			try {
+				nextCase = listPos.remove(0);
+			} catch (IndexOutOfBoundsException e) {
+				// Le déplacement est impossible
+				nextCase = null;
+			}
+		} while (nextCase != null
 				&& !this.getMonkeyIsland().isDeplacementPossible(nextCase.x, nextCase.y));
-		return listPos.isEmpty() ? null : nextCase;
+
+		return nextCase;
 	}
 }
