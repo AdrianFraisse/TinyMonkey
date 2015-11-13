@@ -43,9 +43,10 @@ final public class TinyMonkeys {
 					javaProbeWrapper.Start();
 					Thread.sleep(1000*15);
 					javaProbeWrapper.StopMeasure("probe_tinymonkeys", 1);
+					System.exit(0);
 					
 				} catch (InterruptedException e) {
-					e.printStackTrace();
+					System.exit(0);
 				}
 				
 			}

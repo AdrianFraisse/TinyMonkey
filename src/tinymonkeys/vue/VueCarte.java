@@ -104,7 +104,7 @@ public class VueCarte extends JPanel {
 	 * 
 	 * @param g le graphique dans lequel dessiner.
 	 */
-	public void paintComponent(Graphics g) {
+	public final void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		this.dessineIle(g);
 		this.dessineGrille(g);
@@ -160,9 +160,11 @@ public class VueCarte extends JPanel {
 	 * 
 	 * @param g le graphique dans lequel dessiner.
 	 */
-	public void dessineIle(Graphics g) {
-		for (int i = 0; i < this.largeurGrille; i++) {
-			for (int j = 0; j < this.hauteurGrille; j++) {
+	public final void dessineIle(Graphics g) {
+		int i = -1;
+		while (++i < this.largeurGrille) {
+			int j = -1;
+			while (++j < this.hauteurGrille) {
 				// Si la case est de type mer.
 				if (this.carte[i][j] == 0) {
 					g.setColor(OCEAN);
@@ -180,7 +182,7 @@ public class VueCarte extends JPanel {
 	 * 
 	 * @param carte la nouvelle carte.
 	 */
-	public void setVueCarte(int[][] carte) {
+	public final void setVueCarte(int[][] carte) {
 		this.largeurGrille = carte.length;
 		this.hauteurGrille = carte[0].length;
 		this.copieCarte(carte);
@@ -195,7 +197,7 @@ public class VueCarte extends JPanel {
 	 * 
 	 * @return la taille d'une case.
 	 */
-	public int getTailleCase() {
+	public final int getTailleCase() {
 		return this.tailleCase;
 	}
 
@@ -204,7 +206,7 @@ public class VueCarte extends JPanel {
 	 * 
 	 * @return l'abscisse de la grille.
 	 */
-	public int getXGrille() {
+	public final int getXGrille() {
 		return this.xGrille;
 	}
 
@@ -213,7 +215,7 @@ public class VueCarte extends JPanel {
 	 * 
 	 * @return l'ordonnee de la grille.
 	 */
-	public int getYGrille() {
+	public final int getYGrille() {
 		return this.yGrille;
 	}
 
@@ -224,8 +226,11 @@ public class VueCarte extends JPanel {
 	 */
 	private void copieCarte(int[][] carte) {
 		this.carte = new int[carte.length][carte[0].length];
-		for (int i = 0; i < carte.length; i++) {
-			for (int j = 0; j < carte[0].length; j++) {
+		int i = -1;
+		
+		while (++i < carte.length) {
+			int j = -1;
+			while(++j < carte[0].length) {
 				this.carte[i][j] = carte[i][j];
 			}
 		}

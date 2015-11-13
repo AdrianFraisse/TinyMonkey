@@ -45,7 +45,7 @@ public class SingeErratique extends Singe {
 	protected CaseVide getNextRandomPos() {
 
 		// Création d'une liste contenant les 4 déplacements possibles
-		final List<CaseVide> listPos = new ArrayList<CaseVide>();
+		final List<CaseVide> listPos = new ArrayList<CaseVide>(4);
 		listPos.add(new CaseVide(this.getX(), this.getY() + 1));
 		listPos.add(new CaseVide(this.getX(), this.getY() - 1));
 		listPos.add(new CaseVide(this.getX() + 1, this.getY()));

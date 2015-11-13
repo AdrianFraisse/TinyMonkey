@@ -2,6 +2,7 @@ package tinymonkeys.vue;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 
@@ -23,6 +24,8 @@ public class VueSingeErratique extends VuePersonnage {
 	 * Emplacement de l'image du singe erratique.
 	 */
 	private static final String IMAGE_SINGE_ERRATIQUE = "./img/Singe_Erratique.png";
+	
+	private static final Logger log = Logger.getGlobal();
 
 	/**
 	 * La vue d'un singe erratique.
@@ -43,7 +46,7 @@ public class VueSingeErratique extends VuePersonnage {
 			final File input = new File(IMAGE_SINGE_ERRATIQUE);
 			this.setImageElement(ImageIO.read(input));
 		} catch (IOException ie) {
-			System.out.println("Error:" + ie.getMessage());
+			log.info("Error:" + ie.getMessage());
 		}
 
 	}

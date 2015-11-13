@@ -4,6 +4,7 @@ import java.awt.Graphics;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 
@@ -30,6 +31,8 @@ public class VuePirate extends VuePersonnage {
 	 * Message d'erreur.
 	 */
 	private static final String ERROR = "Error : ";
+	
+	private static final Logger log = Logger.getGlobal();
 
 	/**
 	 * Emplacement de l'avatar du pirate mort.
@@ -58,7 +61,7 @@ public class VuePirate extends VuePersonnage {
 			final File input = new File(avatarPirate);
 			this.setImageElement(ImageIO.read(input));
 		} catch (IOException ie) {
-			System.out.println(ERROR + ie.getMessage());
+			log.info(ERROR + ie.getMessage());
 		}
 
 	}
@@ -67,7 +70,7 @@ public class VuePirate extends VuePersonnage {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void dessineElement(Graphics g) {
+	public final void dessineElement(Graphics g) {
 		g.drawImage(this.getImageElement(), 0, 0, this.tailleImage,
 				this.tailleImage, null);
 	}
@@ -75,12 +78,12 @@ public class VuePirate extends VuePersonnage {
 	/**
 	 * L'avatar du pirate devient un avatar de mort.
 	 */
-	public void mortPirate() {
+	public final void mortPirate() {
 		try {
 			final File input = new File(AVATAR_PIRATE_MORT);
 			this.setImageElement(ImageIO.read(input));
 		} catch (IOException ie) {
-			System.out.println(ERROR + ie.getMessage());
+			log.info(ERROR + ie.getMessage());
 		}
 	}
 }

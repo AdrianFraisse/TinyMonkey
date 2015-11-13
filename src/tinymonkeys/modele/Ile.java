@@ -223,9 +223,12 @@ public class Ile {
 	 * @return une liste de CaseVide
 	 */
 	protected List<CaseVide> genererListCasesTerre() {
+		int largeurCarte = this.getLargeurCarte();
+		int longueurCarte = this.getLongueurCarte();
 		final List<CaseVide> cases = new ArrayList<CaseVide>();
-		for (int i = 0; i < this.getLargeurCarte(); i++) {
-			for (int j = 0; j < this.getLongueurCarte(); j++) {
+		
+		for (int i = 0; i < largeurCarte; ++i) {
+			for (int j = 0; j < longueurCarte; ++j) {
 				if (this.valeurCarte(i, j) == 1) {
 					cases.add(new CaseVide(i, j));
 				}

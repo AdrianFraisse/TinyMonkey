@@ -75,7 +75,7 @@ public class TestSingeErratiqueInteg {
 		int previousX = singe.x; // NOPMD by Adrian on 22/02/15 19:40 - Faux positif anomalie DU
 		int previousY = singe.y; // NOPMD by Adrian on 22/02/15 19:40 - Faux positif anomalie DU
 		
-		for (int i = 0; i < NB_IT; i++) {
+		for (int i = 0; i < NB_IT; ++i) {
 			// Déplacement de tous les singes
 			singes.forEach(elem -> elem.deplacerSinge());
 			
@@ -226,20 +226,24 @@ public class TestSingeErratiqueInteg {
 	 */
 	private static int[][] exempleCarte() {
 		final int[][] carte = new int[LARGEUR_GRILLE][HAUTEUR_GRILLE];
-		int i;
-		int j;
 
-		for (i = 0; i < LARGEUR_GRILLE; i++) {
+		int i = -1;
+		while (++i < LARGEUR_GRILLE) {
 			carte[i][0] = 0;
 			carte[i][HAUTEUR_GRILLE - 1] = 0;
 		}
-		for (j = 0; j < HAUTEUR_GRILLE; j++) {
+
+		int j = -1;
+		while (++j < HAUTEUR_GRILLE) {
 			carte[0][j] = 0;
 			carte[LARGEUR_GRILLE - 1][j] = 0;
 		}
-		for (i = 1; i < LARGEUR_GRILLE - 1; i++) {
-			for (j = 1; j < HAUTEUR_GRILLE - 1; j++) {
-				carte[i][j] = 1;
+		
+		int k = 0;
+		int l = 0;
+		while (++k < LARGEUR_GRILLE - 1) {
+			while(++l < HAUTEUR_GRILLE - 1) {
+				carte[k][l] = 1;
 			}
 		}
 		return carte;

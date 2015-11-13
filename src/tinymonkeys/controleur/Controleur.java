@@ -95,20 +95,23 @@ public class Controleur {
 	 */
 	private static int[][] exempleCarte() {
 		final int[][] carte = new int[LARGEUR_GRILLE][HAUTEUR_GRILLE];
-		int i;
-		int j;
-
-		for (i = 0; i < LARGEUR_GRILLE; i++) {
+		int i = -1;
+		int j = -1;
+		
+		while(++i < LARGEUR_GRILLE) {
 			carte[i][0] = 0;
 			carte[i][HAUTEUR_GRILLE - 1] = 0;
 		}
-		for (j = 0; j < HAUTEUR_GRILLE; j++) {
+		while (++j < HAUTEUR_GRILLE) {
 			carte[0][j] = 0;
 			carte[LARGEUR_GRILLE - 1][j] = 0;
 		}
-		for (i = 1; i < LARGEUR_GRILLE - 1; i++) {
-			for (j = 1; j < HAUTEUR_GRILLE - 1; j++) {
-				carte[i][j] = 1;
+		
+		int k = 0;
+		while (++k < LARGEUR_GRILLE - 1) {
+			int l = 0;
+			while (++l < HAUTEUR_GRILLE - 1) {
+				carte[k][l] = 1;
 			}
 		}
 		return carte;

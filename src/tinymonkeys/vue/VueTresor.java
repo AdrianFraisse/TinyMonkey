@@ -2,6 +2,7 @@ package tinymonkeys.vue;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 
@@ -24,6 +25,8 @@ public class VueTresor extends VueElement {
 	 * Emplacement de l'image d'une banane.
 	 */
 	private static final String IMAGE_TRESOR = "./img/Tresor.png";
+	
+	private static final Logger log = Logger.getGlobal();
 
 	/**
 	 * La vue d'un tresor.
@@ -43,7 +46,7 @@ public class VueTresor extends VueElement {
 			final File input = new File(IMAGE_TRESOR);
 			this.setImageElement(ImageIO.read(input));
 		} catch (IOException ie) {
-			System.out.println("Error:" + ie.getMessage());
+			log.info("Error:" + ie.getMessage());
 		}
 
 	}

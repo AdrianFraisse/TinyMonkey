@@ -4,9 +4,9 @@
 	"application": "TinyMonkeys",
 	"test" : "",
 	"version": "0.6.2",
-	"url": "http://greenspector.test.kali/api",
+	"url": "http://app.greenspector.com/api",
 	"webserviceurl": "",
 	"sonde": "powerapi",
 	"platform": "PC Linux",
-	"offline": "true"
+	"offline": "false"
 }

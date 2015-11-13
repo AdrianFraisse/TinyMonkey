@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.Vector;
+import java.util.logging.Logger;
 
 import javax.swing.event.EventListenerList;
 
@@ -25,6 +26,8 @@ public class BandeDeSingesErratiques extends Thread {
 	 * Vecteur contenant l'ensemble des singes erratiques.
 	 */
 	private Vector<SingeErratique> erratiques;
+	
+	private static final Logger log = Logger.getGlobal();
 
 	/**
 	 * L'ile.
@@ -102,7 +105,8 @@ public class BandeDeSingesErratiques extends Thread {
 	public void run() {
 		while (true) {
 			// Déplace les singes, les uns après les autres, de manière temporisée
-			for (int i = 0; i < this.erratiques.size(); i++) {
+			int size = this.erratiques.size();
+			for (int i = 0; i < size; i++) {
 				final SingeErratique singe = this.erratiques.get(i);
 				singe.deplacerSinge();
 				final int id = i;
@@ -116,7 +120,7 @@ public class BandeDeSingesErratiques extends Thread {
 			try {
 				Thread.sleep(TEMPO_DEPLACEMENT);
 			} catch (InterruptedException e) {
-				System.err.println("Thread interrompu : " + e.getCause());
+				log.info("Thread interrompu:" + e.getCause().getMessage());
 			}
 		}
 	}
