@@ -19,7 +19,7 @@ public class BandeDeSingesErratiques extends Thread {
 	/**
 	 * Temporisation entre chaque déplacement de singe.
 	 */
-	private static final int TEMPO_DEPLACEMENT = 100;
+	private static final int TEMPO_DEPLACEMENT = 250;
 
 	/**
 	 * Vecteur contenant l'ensemble des singes erratiques.

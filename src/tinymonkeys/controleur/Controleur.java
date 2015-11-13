@@ -17,12 +17,12 @@ public class Controleur {
 	/**
 	 * Largeur de la carte en nombre de cases.
 	 */
-	private static final int LARGEUR_GRILLE = 20;
+	private static final int LARGEUR_GRILLE = 30;
 
 	/**
 	 * Hauteur de la carte en nombre de cases.
 	 */
-	private static final int HAUTEUR_GRILLE = 20;
+	private static final int HAUTEUR_GRILLE = 30;
 
 	/**
 	 * Emplacement de l'image du pirate.

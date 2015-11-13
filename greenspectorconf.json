@@ -1,0 +1,12 @@
+{
+	"java_path": "/Library/Java/JavaVirtualMachines/jdk1.7.0_79.jdk/Contents/Home",
+	"usermail": "adrian.fraisse@etudiant.mines-nantes.fr",
+	"application": "TinyMonkeys",
+	"test" : "",
+	"version": "0.6.2",
+	"url": "http://greenspector.test.kali/api",
+	"webserviceurl": "",
+	"sonde": "powerapi",
+	"platform": "PC Linux",
+	"offline": "true"
+}

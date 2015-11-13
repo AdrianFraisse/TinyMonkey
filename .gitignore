@@ -2,3 +2,4 @@
 /img/
 /checkstyle-exclude.xml
 /.settings/
+/target/

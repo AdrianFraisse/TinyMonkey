@@ -1,5 +1,7 @@
 package tinymonkeys;
 
+import com.greenspector.probe.wrappers.java.JavaProbeWrapper;
+
 import tinymonkeys.controleur.Controleur;
 
 /**
@@ -30,6 +32,26 @@ final public class TinyMonkeys {
 	public static void main(String[] args) {
 		final Controleur c = new Controleur();
 		c.lanceEvolutionsPersonnages();
+		
+		final JavaProbeWrapper javaProbeWrapper = new JavaProbeWrapper();
+		javaProbeWrapper.SetUpMeasures("java", 6000, 1000, false,"");
+		
+		new Thread(new Runnable() {
+		
+			public final void run() {
+				try {
+					javaProbeWrapper.Start();
+					Thread.sleep(1000*15);
+					javaProbeWrapper.StopMeasure("probe_tinymonkeys", 1);
+					
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				
+			}
+		}).start();
+		
 	}
+	
 
 }
